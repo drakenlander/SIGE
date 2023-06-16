@@ -12,28 +12,6 @@ lenRes = []
 year = 2021
 lenYearRes = []
 yearDiffRes = []
-
-
-def getByCareer(query, career):
-    cursor.execute(query, career)
-    res = []
-
-    for n in cursor:
-        res.append(n)
-
-    lenRes.append(len(res))
-
-
-def getByYear(query, y, career):
-    cursor.execute(query, (y, career))
-    res = []
-
-    for n in cursor:
-        res.append(n)
-
-    lenYearRes.append(len(res))
-
-
 fullCareerArr = [["Ing. Civil", "%Civil%"],  # 0
                  ["Diplomacia y Relaciones Internacionales", "%Diplomacia%"],  # 1
                  ["Comunicación y Relaciones Públicas", "%Comunicaci%"],  # 2
@@ -53,10 +31,38 @@ fullCareerArr = [["Ing. Civil", "%Civil%"],  # 0
                  ["Derecho", "%Derecho%"],  # 15
                  ["Ing. en Sistemas de Información", "%Sistemas%"],  # 16
                  ["Science in Global Management", "%Management%"]]  # 17
+# careerArr = [fullCareerArr[3], fullCareerArr[7], fullCareerArr[10], fullCareerArr[15]]
+careerArr = []
 
-careerArr = [fullCareerArr[3], fullCareerArr[7], fullCareerArr[10], fullCareerArr[15]]
 
-for e in careerArr:
+def getByCareer(query, career):
+    cursor.execute(query, career)
+    res = []
+
+    for n in cursor:
+        res.append(n)
+
+    lenRes.append(len(res))
+
+
+def getByYear(query, y, career):
+    cursor.execute(query, (y, career))
+    res = []
+    pRes = []
+
+    for n in cursor:
+        res.append(n)
+
+    cursor.execute('''SELECT * FROM uber_grad WHERE "Titulo_y_grado_otorgado" LIKE %s;''', career)
+
+    for m in cursor:
+        pRes.append(m)
+
+    lenYearRes.append(len(res))
+    yearDiffRes.append(len(pRes) - len(res))
+
+
+def select(e):
     legendArr.append(e[0])
 
     q = '''SELECT * FROM uber_grad WHERE "Titulo_y_grado_otorgado" LIKE %s;'''
@@ -65,8 +71,28 @@ for e in careerArr:
     yearQ = '''SELECT * FROM uber_grad WHERE "Graduacion" > %s AND "Titulo_y_grado_otorgado" LIKE %s'''
     getByYear(yearQ, year, (e[1],))
 
-for i in range(len(lenRes)):
-    yearDiffRes.append(lenRes[i] - lenYearRes[i])
+    # for k in range(len(lenRes)):
+    # yearDiffRes.append(lenRes[k] - lenYearRes[k])
+
+
+def addCareer(career):
+    for i in range(len(fullCareerArr)):
+        if fullCareerArr[i][0] == career:
+            careerArr.append(fullCareerArr[i])
+            select(careerArr[-1])
+
+    print("careerArr: ", careerArr)
+    print("legendArr: ", legendArr)
+    print("lenRes: ", lenRes)
+    print("lenYearRes: ", lenYearRes)
+    print("yearDiffRes: ", yearDiffRes)
+
+
+def getLength():
+    length = len(lenRes)
+
+    return length
+
 
 '''
 lim = SELECT * FROM uber_grad WHERE "Graduacion" > 2022;
