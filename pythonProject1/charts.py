@@ -3,13 +3,9 @@ from matplotlib import pyplot as plt
 from matplotlib.lines import Line2D
 import careers
 
-length = len(careers.lenRes)
-
 x = careers.legendArr
-subX = ["> " + str(careers.year), "< " + str(careers.year)] * length
 y = careers.lenRes
 
-figsize = (2.25 * length, 5)
 radius = 1
 width = 0.5
 size = 0.2
@@ -17,28 +13,14 @@ size = 0.2
 cmap = plt.colormaps["tab20"]
 bar_colors_legend = [Line2D([0], [0], color=cmap(0), lw=4),
                      Line2D([0], [0], color=cmap(2), lw=4)]
-outer_colors = [0] * length
-outer_colors_iter = 0
-inner_colors = [0] * (length * 2)
-inner_colors_iter = 0
-inner_colors_legend = [Line2D([0], [0], color=cmap(14), lw=4),
-                       Line2D([0], [0], color=cmap(15), lw=4)]
-
-for i in range(length):
-    outer_colors[i] = outer_colors_iter
-    outer_colors_iter += 2
-
-for j in range(length * 2):
-    inner_colors[j] = inner_colors_iter
-    inner_colors_iter += 1
-
-outer_colors = cmap(outer_colors)
-inner_colors = cmap(inner_colors)
 
 
 # Bar Chart
 def barChart():
-    plt.figure(figsize=figsize)
+    sz = careers.getLength()
+    fig = (2.25 * sz, 5)
+
+    plt.figure(figsize=fig)
 
     plt.bar(x, y, color=cmap(0), width=width)
     # plt.ylim(0, len(careers.resLim))
@@ -52,11 +34,16 @@ def barChart():
 
 # Stacked Bar Chart
 def stackedBarChart():
-    fig, ax = plt.subplots(figsize=figsize)
-    bottom = np.zeros(length)
-    barV = np.zeros((2, length))
+    sz = careers.getLength()
+    fig = (2.25 * sz, 5)
 
-    for e in range(length):
+    subX = ["> " + str(careers.year), "< " + str(careers.year)] * sz
+
+    fig, ax = plt.subplots(figsize=fig)
+    bottom = np.zeros(sz)
+    barV = np.zeros((2, sz))
+
+    for e in range(sz):
         barV[0][e] = careers.lenYearRes[e]
         barV[1][e] = careers.yearDiffRes[e]
 
@@ -75,7 +62,19 @@ def stackedBarChart():
 
 # Pie Chart
 def pieChart():
-    plt.figure(figsize=figsize)
+    sz = careers.getLength()
+    fig = (2.25 * sz, 5)
+
+    outer_colors = [0] * sz
+    outer_colors_iter = 0
+
+    for i in range(sz):
+        outer_colors[i] = outer_colors_iter
+        outer_colors_iter += 2
+
+    outer_colors = cmap(outer_colors)
+
+    plt.figure(figsize=fig)
 
     plt.pie(y, colors=outer_colors, wedgeprops=dict(edgecolor='w'), labels=x, autopct='%1.1f%%')
 
@@ -90,11 +89,34 @@ def pieChart():
 
 # Nested Pie Chart
 def nestedPieChart():
-    fig, ax = plt.subplots(figsize=figsize)
+    sz = careers.getLength()
+    fig = (2.25 * sz, 5)
 
-    pieV = np.zeros((length, 2))
+    subX = ["> " + str(careers.year), "< " + str(careers.year)] * sz
 
-    for e in range(length):
+    outer_colors = [0] * sz
+    outer_colors_iter = 0
+    inner_colors = [0] * (sz * 2)
+    inner_colors_iter = 0
+    inner_colors_legend = [Line2D([0], [0], color=cmap(14), lw=4),
+                           Line2D([0], [0], color=cmap(15), lw=4)]
+
+    for i in range(sz):
+        outer_colors[i] = outer_colors_iter
+        outer_colors_iter += 2
+
+    for j in range(sz * 2):
+        inner_colors[j] = inner_colors_iter
+        inner_colors_iter += 1
+
+    outer_colors = cmap(outer_colors)
+    inner_colors = cmap(inner_colors)
+
+    fig, ax = plt.subplots(figsize=fig)
+
+    pieV = np.zeros((sz, 2))
+
+    for e in range(sz):
         pieV[e][0] = careers.lenYearRes[e]
         pieV[e][1] = careers.yearDiffRes[e]
 
