@@ -13,23 +13,23 @@ year = 2021
 lenYearRes = []
 yearDiffRes = []
 fullCareerArr = [["Ing. Civil", "%Civil%"],  # 0
-                 ["Diplomacia y Relaciones Internacionales", "%Diplomacia%"],  # 1
-                 ["Comunicación y Relaciones Públicas", "%Comunicaci%"],  # 2
+                 ["Diplomacia y Rel. Internacionales", "%Diplomacia%"],  # 1
+                 ["Comunicación y Rel. Públicas", "%Comunicaci%"],  # 2
                  ["Medicina y Cirugía", "%Medicina%"],  # 3
                  ["Arquitectura", "%Arquitect%"],  # 4
                  ["Diseño y Comunicación Visual", "%Dise%"],  # 5
                  ["Marketing y Publicidad", "%Marketing%"],  # 6
-                 ["Ingeniería Industrial", "%Industrial%"],  # 7
+                 ["Ing. Industrial", "%Industrial%"],  # 7
                  ["Contabilidad y Finanzas", "%Contabilidad%"],  # 8
                  ["Negocios Internacionales", "%Negocios%"],  # 9
                  ["Administración de Empresas", "%Administraci%"],  # 10
                  ["Gerencia Informática", "%Gerencia%"],  # 11
                  ["Economía Empresarial", "%Econom%"],  # 12
                  ["Cirujano Dentista", "%Dentista%"],  # 13
-                 ["Science in International Development with Concentration in Tourism Development", "%International%"],
+                 ["Science in International Development", "%International%"],
                  # 14
                  ["Derecho", "%Derecho%"],  # 15
-                 ["Ing. en Sistemas de Información", "%Sistemas%"],  # 16
+                 ["Ing. en Sistemas", "%Sistemas%"],  # 16
                  ["Science in Global Management", "%Management%"]]  # 17
 # careerArr = [fullCareerArr[3], fullCareerArr[7], fullCareerArr[10], fullCareerArr[15]]
 careerArr = []
@@ -81,11 +81,17 @@ def addCareer(career):
             careerArr.append(fullCareerArr[i])
             select(careerArr[-1])
 
-    print("careerArr: ", careerArr)
-    print("legendArr: ", legendArr)
-    print("lenRes: ", lenRes)
-    print("lenYearRes: ", lenYearRes)
-    print("yearDiffRes: ", yearDiffRes)
+
+def removeCareer(career):
+    for i in careerArr:
+        if i[0] == career:
+            index = careerArr.index(i)
+
+            careerArr.remove(i)
+            legendArr.remove(legendArr[index])
+            lenRes.remove(lenRes[index])
+            lenYearRes.remove(lenYearRes[index])
+            yearDiffRes.remove(yearDiffRes[index])
 
 
 def getLength():
