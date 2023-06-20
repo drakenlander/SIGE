@@ -37,7 +37,7 @@ def stackedBarChart():
     sz = careers.getLength()
     fig = (2.25 * sz, 5)
 
-    subX = ["> " + str(careers.year), "< " + str(careers.year)] * sz
+    subX = ["> " + str(careers.yearStorage[-1]), "< " + str(careers.yearStorage[-1])] * sz
 
     fig, ax = plt.subplots(figsize=fig)
     bottom = np.zeros(sz)
@@ -92,7 +92,7 @@ def nestedPieChart():
     sz = careers.getLength()
     fig = (2.25 * sz, 5)
 
-    subX = ["> " + str(careers.year), "< " + str(careers.year)] * sz
+    subX = ["> " + str(careers.yearStorage[-1]), "< " + str(careers.yearStorage[-1])] * sz
 
     outer_colors = [0] * sz
     outer_colors_iter = 0

@@ -9,28 +9,27 @@ conn = psycopg2.connect(
 cursor = conn.cursor()
 legendArr = []
 lenRes = []
-year = 2021
+yearStorage = []
 lenYearRes = []
 yearDiffRes = []
-fullCareerArr = [["Ing. Civil", "%Civil%"],  # 0
-                 ["Diplomacia y Rel. Internacionales", "%Diplomacia%"],  # 1
-                 ["Comunicación y Rel. Públicas", "%Comunicaci%"],  # 2
-                 ["Medicina y Cirugía", "%Medicina%"],  # 3
-                 ["Arquitectura", "%Arquitect%"],  # 4
-                 ["Diseño y Comunicación Visual", "%Dise%"],  # 5
-                 ["Marketing y Publicidad", "%Marketing%"],  # 6
-                 ["Ing. Industrial", "%Industrial%"],  # 7
-                 ["Contabilidad y Finanzas", "%Contabilidad%"],  # 8
-                 ["Negocios Internacionales", "%Negocios%"],  # 9
-                 ["Administración de Empresas", "%Administraci%"],  # 10
-                 ["Gerencia Informática", "%Gerencia%"],  # 11
-                 ["Economía Empresarial", "%Econom%"],  # 12
-                 ["Cirujano Dentista", "%Dentista%"],  # 13
-                 ["Science in International Development", "%International%"],
-                 # 14
-                 ["Derecho", "%Derecho%"],  # 15
-                 ["Ing. en Sistemas", "%Sistemas%"],  # 16
-                 ["Science in Global Management", "%Management%"]]  # 17
+fullCareerArr = [["Administración de Empresas", "%Administraci%"],  # 0
+                 ["Arquitectura", "%Arquitect%"],  # 1
+                 ["Cirujano Dentista", "%Dentista%"],  # 2
+                 ["Comunicación y Rel. Públicas", "%Comunicaci%"],  # 3
+                 ["Contabilidad y Finanzas", "%Contabilidad%"],  # 4
+                 ["Derecho", "%Derecho%"],  # 5
+                 ["Diplomacia y Rel. Internacionales", "%Diplomacia%"],  # 6
+                 ["Diseño y Comunicación Visual", "%Dise%"],  # 7
+                 ["Economía Empresarial", "%Econom%"],  # 8
+                 ["Gerencia Informática", "%Gerencia%"],  # 9
+                 ["Ing. Civil", "%Civil%"],  # 10
+                 ["Ing. en Sistemas", "%Sistemas%"],  # 11
+                 ["Ing. Industrial", "%Industrial%"],  # 12
+                 ["Marketing y Publicidad", "%Marketing%"],  # 13
+                 ["Medicina y Cirugía", "%Medicina%"],  # 14
+                 ["Negocios Internacionales", "%Negocios%"],  # 15
+                 ["Science in Global Management", "%Global%"],  # 16
+                 ["Science in International Development", "%International%"]]  # 17
 # careerArr = [fullCareerArr[3], fullCareerArr[7], fullCareerArr[10], fullCareerArr[15]]
 careerArr = []
 
@@ -62,29 +61,32 @@ def getByYear(query, y, career):
     yearDiffRes.append(len(pRes) - len(res))
 
 
-def select(e):
+def select(e, y):
     legendArr.append(e[0])
 
     q = '''SELECT * FROM uber_grad WHERE "Titulo_y_grado_otorgado" LIKE %s;'''
     getByCareer(q, (e[1],))
 
     yearQ = '''SELECT * FROM uber_grad WHERE "Graduacion" > %s AND "Titulo_y_grado_otorgado" LIKE %s'''
-    getByYear(yearQ, year, (e[1],))
+    getByYear(yearQ, y, (e[1],))
 
     # for k in range(len(lenRes)):
     # yearDiffRes.append(lenRes[k] - lenYearRes[k])
 
 
-def addCareer(career):
+def addCareer(career, y):
     for i in range(len(fullCareerArr)):
         if fullCareerArr[i][0] == career:
+            yearStorage.append(y)
+
             careerArr.append(fullCareerArr[i])
-            select(careerArr[-1])
+            select(careerArr[-1], y)
 
 
 def removeCareer(career):
     for i in careerArr:
         if i[0] == career:
+            print("removed ", career)
             index = careerArr.index(i)
 
             careerArr.remove(i)
@@ -92,6 +94,14 @@ def removeCareer(career):
             lenRes.remove(lenRes[index])
             lenYearRes.remove(lenYearRes[index])
             yearDiffRes.remove(yearDiffRes[index])
+
+
+def clearArr():
+    careerArr.clear()
+    legendArr.clear()
+    lenRes.clear()
+    lenYearRes.clear()
+    yearDiffRes.clear()
 
 
 def getLength():
