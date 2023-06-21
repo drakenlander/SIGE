@@ -18,7 +18,7 @@ bar_colors_legend = [Line2D([0], [0], color=cmap(0), lw=4),
 # Bar Chart
 def barChart():
     sz = careers.getLength()
-    fig = (2.25 * sz, 5)
+    fig = (4.5 * sz, 5)
 
     plt.figure(figsize=fig)
 
@@ -48,8 +48,10 @@ def stackedBarChart():
         barV[1][e] = careers.yearDiffRes[e]
 
     for bar in barV:
-        ax.bar(x, bar, width=width, bottom=bottom)
+        p = ax.bar(x, bar, width=width, bottom=bottom)
         bottom += bar
+
+        ax.bar_label(p, label_type="center")
 
     plt.xlabel("Carreras Universitarias")
     plt.ylabel("Graduados por Carrera Universitaria")
@@ -129,6 +131,7 @@ def nestedPieChart():
                               bbox_to_anchor=(0.0, 0.0), loc="center")
     ax.add_artist(careerLegend)
     '''
+
     ax.legend(inner_colors_legend, subX, title="Distribución de Tiempo",
               bbox_to_anchor=(1.0, 1.0), loc="center")
     plt.tight_layout()

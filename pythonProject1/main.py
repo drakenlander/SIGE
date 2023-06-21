@@ -6,23 +6,12 @@ import charts
 
 matplotlib.use('TkAgg')
 
-font = ("Segoe UI", 28, "bold")
-
 toggles = [True] * len(careers.fullCareerArr)
-
-a_words = []
-b_words = []
-
-for e in range(len(careers.fullCareerArr)):
-    if e < 9:
-        a_words.append(careers.fullCareerArr[e])
-    else:
-        b_words.append(careers.fullCareerArr[e])
 
 years = ["2011", "2012", "2013", "2014", "2015", "2016", "2017", "2018", "2019", "2020", "2021", "2022", "2023"]
 
 
-# TODO: Add better Year filter; Add Reset button
+# TODO: Add better Year filter; Add Menu; Add Excel file upload; Add Excel file conversion
 class App(tk.Tk):
     def __init__(self, *args, **kwargs):
         tk.Tk.__init__(self, *args, **kwargs)
@@ -60,6 +49,9 @@ class App(tk.Tk):
             for j in range(len(b_children_widgets)):
                 if isinstance(b_children_widgets[j], tk.Checkbutton):
                     b_children_widgets[j].deselect()
+
+            for k in range(len(toggles)):
+                toggles[k] = True
 
             careers.clearArr()
 
