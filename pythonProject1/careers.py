@@ -86,7 +86,6 @@ def addCareer(career, y):
 def removeCareer(career):
     for i in careerArr:
         if i[0] == career:
-            print("removed ", career)
             index = careerArr.index(i)
 
             careerArr.remove(i)

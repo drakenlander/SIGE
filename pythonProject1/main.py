@@ -11,10 +11,58 @@ toggles = [True] * len(careers.fullCareerArr)
 years = ["2011", "2012", "2013", "2014", "2015", "2016", "2017", "2018", "2019", "2020", "2021", "2022", "2023"]
 
 
-# TODO: Add Excel file upload; Add Excel file conversion
+# TODO: Add Excel file upload
+# TODO: Add Excel file conversion
 class App(tk.Tk):
     def __init__(self, *args, **kwargs):
         tk.Tk.__init__(self, *args, **kwargs)
+
+        container = tk.Frame(self)
+        container.pack(side="top", fill="both", expand=True)
+        container.grid_rowconfigure(0, weight=1)
+        container.grid_columnconfigure(0, weight=1)
+
+        self.frames = {}
+
+        for F in (StartPage, PageOne, PageTwo):
+            frame = F(container, self)
+            self.frames[F] = frame
+            frame.grid(row=0, column=0, sticky="nsew")
+
+        self.show_frame(StartPage)
+
+        menubar = tk.Menu(self)
+        pg_menu = tk.Menu(menubar, tearoff=False)
+        ex_menu = tk.Menu(menubar, tearoff=False)
+
+        pg_menu.add_command(label="Chart from DB", command=lambda: self.show_frame(StartPage))
+        pg_menu.add_command(label="Visualize DB")
+        menubar.add_cascade(
+            label="PostgreSQL",
+            menu=pg_menu,
+            underline=0
+        )
+
+        ex_menu.add_command(label="Chart from Spreadsheet", command=lambda: self.show_frame(PageOne))
+        ex_menu.add_command(label="Upload Spreadsheet")
+        menubar.add_cascade(
+            label="Microsoft Excel",
+            menu=ex_menu,
+            underline=0
+        )
+
+        self.configure(menu=menubar, background="white")
+
+    def show_frame(self, cont):
+        frame = self.frames[cont]
+        frame.tkraise()
+
+
+class StartPage(tk.Frame):
+    def __init__(self, parent, controller):
+        tk.Frame.__init__(self, parent, background="white")
+
+        self.controller = controller
 
         a_careers_frame = tk.Frame(self, background="white")
         a_careers_frame.pack(side="left", padx=50)
@@ -57,7 +105,7 @@ class App(tk.Tk):
         yearFilter = ttk.Combobox(b_careers_frame, state="readonly", values=years)
         yearFilter.bind("<<ComboboxSelected>>", getYear())
         yearFilter.pack(fill="x")
-        yearFilter.current(None)
+        yearFilter.current(0)
 
         tk.Label(a_careers_frame, background="white").pack()
         tk.Label(b_careers_frame, background="white").pack()
@@ -143,30 +191,39 @@ class App(tk.Tk):
                                                                                                         pady=5)
 
 
+class PageOne(tk.Frame):
+    def __init__(self, parent, controller):
+        tk.Frame.__init__(self, parent)
+        label = tk.Label(self, text="Page One!!!")
+        label.pack(pady=10, padx=10)
+
+        button1 = tk.Button(self, text="Back to Home",
+                            command=lambda: controller.show_frame(StartPage))
+        button1.pack()
+
+        button2 = tk.Button(self, text="Page Two",
+                            command=lambda: controller.show_frame(PageTwo))
+        button2.pack()
+
+
+class PageTwo(tk.Frame):
+    def __init__(self, parent, controller):
+        tk.Frame.__init__(self, parent)
+        label = tk.Label(self, text="Page Two!!!")
+        label.pack(pady=10, padx=10)
+
+        button1 = tk.Button(self, text="Back to Home",
+                            command=lambda: controller.show_frame(StartPage))
+        button1.pack()
+
+        button2 = tk.Button(self, text="Page One",
+                            command=lambda: controller.show_frame(PageOne))
+        button2.pack()
+
+
 app = App()
 
-menubar = tk.Menu(app)
-pg_menu = tk.Menu(menubar, tearoff=False)
-ex_menu = tk.Menu(menubar, tearoff=False)
-
-pg_menu.add_command(label="Chart from DB")
-pg_menu.add_command(label="Visualize DB")
-menubar.add_cascade(
-    label="PostgreSQL",
-    menu=pg_menu,
-    underline=0
-)
-
-ex_menu.add_command(label="Chart from Spreadsheet")
-ex_menu.add_command(label="Upload Spreadsheet")
-menubar.add_cascade(
-    label="Microsoft Excel",
-    menu=ex_menu,
-    underline=0
-)
-
 app.title("Sistema de Información de Graduados y Egresados")
-app.configure(menu=menubar, background="white")
 app.geometry("%dx%d" % (854, 480))
 app.resizable(False, False)
 
