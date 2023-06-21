@@ -18,12 +18,15 @@ bar_colors_legend = [Line2D([0], [0], color=cmap(0), lw=4),
 # Bar Chart
 def barChart():
     sz = careers.getLength()
-    fig = (4.5 * sz, 5)
+    fig = (sz, 5)
 
     plt.figure(figsize=fig)
 
-    plt.bar(x, y, color=cmap(0), width=width)
+    p = plt.bar(x, y, color=cmap(0), width=width)
     # plt.ylim(0, len(careers.resLim))
+
+    plt.xticks(rotation=45)
+    plt.bar_label(p, label_type="center")
 
     plt.xlabel("Carreras Universitarias")
     plt.ylabel("Graduados por Carrera Universitaria")
@@ -35,7 +38,7 @@ def barChart():
 # Stacked Bar Chart
 def stackedBarChart():
     sz = careers.getLength()
-    fig = (2.25 * sz, 5)
+    fig = (sz, 5)
 
     subX = ["> " + str(careers.yearStorage[-1]), "< " + str(careers.yearStorage[-1])] * sz
 
@@ -55,8 +58,29 @@ def stackedBarChart():
 
     plt.xlabel("Carreras Universitarias")
     plt.ylabel("Graduados por Carrera Universitaria")
+    plt.setp(ax.get_xticklabels(), rotation=45, horizontalalignment="center")
     plt.legend(bar_colors_legend, subX, title="Distribución de Tiempo",
                bbox_to_anchor=(1.0, 1.0), loc="center")
+    plt.tight_layout()
+
+    plt.show()
+
+
+def dispersionChart():
+    sz = careers.getLength()
+    fig = (sz, 5)
+
+    plt.figure(figsize=fig)
+
+    plt.scatter(x, y)
+
+    for i, txt in enumerate(y):
+        plt.annotate(txt, (x[i], y[i]), xytext=(5, 0), textcoords='offset points')
+
+    plt.xticks(rotation=45)
+
+    plt.xlabel("Carreras Universitarias")
+    plt.ylabel("Graduados por Carrera Universitaria")
     plt.tight_layout()
 
     plt.show()
@@ -65,7 +89,7 @@ def stackedBarChart():
 # Pie Chart
 def pieChart():
     sz = careers.getLength()
-    fig = (2.25 * sz, 5)
+    fig = (5, 5)
 
     outer_colors = [0] * sz
     outer_colors_iter = 0
@@ -92,7 +116,7 @@ def pieChart():
 # Nested Pie Chart
 def nestedPieChart():
     sz = careers.getLength()
-    fig = (2.25 * sz, 5)
+    fig = (5, 5)
 
     subX = ["> " + str(careers.yearStorage[-1]), "< " + str(careers.yearStorage[-1])] * sz
 

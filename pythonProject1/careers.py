@@ -28,8 +28,8 @@ fullCareerArr = [["Administración de Empresas", "%Administraci%"],  # 0
                  ["Marketing y Publicidad", "%Marketing%"],  # 13
                  ["Medicina y Cirugía", "%Medicina%"],  # 14
                  ["Negocios Internacionales", "%Negocios%"],  # 15
-                 ["Science in Global Management", "%Global%"],  # 16
-                 ["Science in International Development", "%International%"]]  # 17
+                 ["Global Management", "%Global%"],  # 16
+                 ["International Development", "%International%"]]  # 17
 # careerArr = [fullCareerArr[3], fullCareerArr[7], fullCareerArr[10], fullCareerArr[15]]
 careerArr = []
 

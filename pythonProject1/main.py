@@ -11,13 +11,11 @@ toggles = [True] * len(careers.fullCareerArr)
 years = ["2011", "2012", "2013", "2014", "2015", "2016", "2017", "2018", "2019", "2020", "2021", "2022", "2023"]
 
 
-# TODO: Add better Year filter; Add Menu; Add Excel file upload; Add Excel file conversion
+# TODO: Add Menu; Add Excel file upload; Add Excel file conversion
 class App(tk.Tk):
     def __init__(self, *args, **kwargs):
         tk.Tk.__init__(self, *args, **kwargs)
 
-        title_frame = tk.Frame(self, background="white")
-        title_frame.pack(pady=25)
         a_careers_frame = tk.Frame(self, background="white")
         a_careers_frame.pack(side="left", padx=50)
         b_careers_frame = tk.Frame(self, background="white")
@@ -115,14 +113,14 @@ class App(tk.Tk):
         tk.Checkbutton(b_careers_frame, text="Negocios Internacionales", background="white", anchor="w",
                        command=lambda: buttonToggle(toggles, 15, "Negocios Internacionales")).pack(fill="x", pady=5)
 
-        tk.Checkbutton(b_careers_frame, text="Science in Global Management", background="white", anchor="w",
-                       command=lambda: buttonToggle(toggles, 16, "Science in Global Management")).pack(fill="x", pady=5)
+        tk.Checkbutton(b_careers_frame, text="Global Management", background="white", anchor="w",
+                       command=lambda: buttonToggle(toggles, 16, "Global Management")).pack(fill="x", pady=5)
 
         tk.Checkbutton(b_careers_frame,
-                       text="Science in International Development",
+                       text="International Development",
                        background="white", anchor="w",
                        command=lambda: buttonToggle(toggles, 17,
-                                                    "Science in International Development")).pack(fill="x", pady=5)
+                                                    "International Development")).pack(fill="x", pady=5)
 
         tk.Button(a_careers_frame, text="Reset array...", background="white", anchor="w",
                   command=lambda: reset(a_careers_frame, b_careers_frame)).pack(fill="x", pady=5)
@@ -134,6 +132,9 @@ class App(tk.Tk):
 
         ttk.Button(charts_frame, text="Stacked Bar Chart", command=lambda: charts.stackedBarChart()).pack(fill="x",
                                                                                                           pady=5)
+
+        ttk.Button(charts_frame, text="Dispersion Chart", command=lambda: charts.dispersionChart()).pack(fill="x",
+                                                                                                         pady=5)
 
         ttk.Button(charts_frame, text="Pie Chart", command=lambda: charts.pieChart()).pack(fill="x", pady=5)
 
