@@ -18,7 +18,7 @@ bar_colors_legend = [Line2D([0], [0], color=cmap(0), lw=4),
 # Bar Chart
 def barChart():
     sz = careers.getLength()
-    fig = (sz, 5)
+    fig = (1.5 * sz, 7.5)
 
     plt.figure(figsize=fig)
 
@@ -38,7 +38,7 @@ def barChart():
 # Stacked Bar Chart
 def stackedBarChart():
     sz = careers.getLength()
-    fig = (sz, 5)
+    fig = (1.5 * sz, 7.5)
 
     subX = ["> " + str(careers.yearStorage[-1]), "< " + str(careers.yearStorage[-1])] * sz
 
@@ -68,7 +68,7 @@ def stackedBarChart():
 
 def dispersionChart():
     sz = careers.getLength()
-    fig = (sz, 5)
+    fig = (1.5 * sz, 7.5)
 
     plt.figure(figsize=fig)
 
@@ -89,7 +89,7 @@ def dispersionChart():
 # Pie Chart
 def pieChart():
     sz = careers.getLength()
-    fig = (5, 5)
+    fig = (7.5, 7.5)
 
     outer_colors = [0] * sz
     outer_colors_iter = 0
@@ -116,7 +116,7 @@ def pieChart():
 # Nested Pie Chart
 def nestedPieChart():
     sz = careers.getLength()
-    fig = (5, 5)
+    fig = (7.5, 7.5)
 
     subX = ["> " + str(careers.yearStorage[-1]), "< " + str(careers.yearStorage[-1])] * sz
 

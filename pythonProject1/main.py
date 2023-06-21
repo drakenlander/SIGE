@@ -11,7 +11,7 @@ toggles = [True] * len(careers.fullCareerArr)
 years = ["2011", "2012", "2013", "2014", "2015", "2016", "2017", "2018", "2019", "2020", "2021", "2022", "2023"]
 
 
-# TODO: Add Menu; Add Excel file upload; Add Excel file conversion
+# TODO: Add Excel file upload; Add Excel file conversion
 class App(tk.Tk):
     def __init__(self, *args, **kwargs):
         tk.Tk.__init__(self, *args, **kwargs)
@@ -57,7 +57,8 @@ class App(tk.Tk):
         yearFilter = ttk.Combobox(b_careers_frame, state="readonly", values=years)
         yearFilter.bind("<<ComboboxSelected>>", getYear())
         yearFilter.pack(fill="x")
-        yearFilter.current(0)
+        yearFilter.current(None)
+
         tk.Label(a_careers_frame, background="white").pack()
         tk.Label(b_careers_frame, background="white").pack()
 
@@ -144,8 +145,29 @@ class App(tk.Tk):
 
 app = App()
 
+menubar = tk.Menu(app)
+pg_menu = tk.Menu(menubar, tearoff=False)
+ex_menu = tk.Menu(menubar, tearoff=False)
+
+pg_menu.add_command(label="Chart from DB")
+pg_menu.add_command(label="Visualize DB")
+menubar.add_cascade(
+    label="PostgreSQL",
+    menu=pg_menu,
+    underline=0
+)
+
+ex_menu.add_command(label="Chart from Spreadsheet")
+ex_menu.add_command(label="Upload Spreadsheet")
+menubar.add_cascade(
+    label="Microsoft Excel",
+    menu=ex_menu,
+    underline=0
+)
+
 app.title("Sistema de Información de Graduados y Egresados")
-app.configure(background='white')
+app.configure(menu=menubar, background="white")
 app.geometry("%dx%d" % (854, 480))
+app.resizable(False, False)
 
 app.mainloop()
