@@ -1,5 +1,5 @@
 import tkinter as tk
-from tkinter import ttk
+from tkinter import ttk, filedialog
 import matplotlib
 import careers
 import charts
@@ -7,8 +7,19 @@ import charts
 matplotlib.use('TkAgg')
 
 toggles = [True] * len(careers.fullCareerArr)
-
 years = ["2011", "2012", "2013", "2014", "2015", "2016", "2017", "2018", "2019", "2020", "2021", "2022", "2023"]
+exFile = [""]
+
+
+def uploadAction():
+    filename = filedialog.askopenfilename()
+    exFile.append("File: " + filename)
+
+
+def passFile(f, v):
+    if exFile[-1] != "":
+        f.append(exFile[-1])
+        v.set(f[-1])
 
 
 # TODO: Add Excel file upload
@@ -24,18 +35,18 @@ class App(tk.Tk):
 
         self.frames = {}
 
-        for F in (StartPage, PageOne, PageTwo):
+        for F in (StartPage, Excel, PageTwo):
             frame = F(container, self)
             self.frames[F] = frame
             frame.grid(row=0, column=0, sticky="nsew")
 
-        self.show_frame(StartPage)
+        self.showFrame(StartPage)
 
         menubar = tk.Menu(self)
         pg_menu = tk.Menu(menubar, tearoff=False)
         ex_menu = tk.Menu(menubar, tearoff=False)
 
-        pg_menu.add_command(label="Chart from DB", command=lambda: self.show_frame(StartPage))
+        pg_menu.add_command(label="Chart from DB", command=lambda: self.showFrame(StartPage))
         pg_menu.add_command(label="Visualize DB")
         menubar.add_cascade(
             label="PostgreSQL",
@@ -43,8 +54,8 @@ class App(tk.Tk):
             underline=0
         )
 
-        ex_menu.add_command(label="Chart from Spreadsheet", command=lambda: self.show_frame(PageOne))
-        ex_menu.add_command(label="Upload Spreadsheet")
+        ex_menu.add_command(label="Chart from Spreadsheet", command=lambda: self.showFrame(Excel))
+        ex_menu.add_command(label="Upload Spreadsheet", command=lambda: uploadAction())
         menubar.add_cascade(
             label="Microsoft Excel",
             menu=ex_menu,
@@ -53,7 +64,7 @@ class App(tk.Tk):
 
         self.configure(menu=menubar, background="white")
 
-    def show_frame(self, cont):
+    def showFrame(self, cont):
         frame = self.frames[cont]
         frame.tkraise()
 
@@ -61,7 +72,6 @@ class App(tk.Tk):
 class StartPage(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent, background="white")
-
         self.controller = controller
 
         a_careers_frame = tk.Frame(self, background="white")
@@ -191,19 +201,23 @@ class StartPage(tk.Frame):
                                                                                                         pady=5)
 
 
-class PageOne(tk.Frame):
+class Excel(tk.Frame):
     def __init__(self, parent, controller):
-        tk.Frame.__init__(self, parent)
-        label = tk.Label(self, text="Page One!!!")
-        label.pack(pady=10, padx=10)
+        tk.Frame.__init__(self, parent, background="white")
+        self.controller = controller
 
-        button1 = tk.Button(self, text="Back to Home",
-                            command=lambda: controller.show_frame(StartPage))
-        button1.pack()
+        # file_frame = tk.Frame(self, background="white")
+        # file_frame.pack(side="top", padx=50)
 
-        button2 = tk.Button(self, text="Page Two",
-                            command=lambda: controller.show_frame(PageTwo))
-        button2.pack()
+        filename = []
+        exName = tk.StringVar()
+        exName.set("File: No upload yet...")
+
+        button = ttk.Button(self, text="Refresh", command=lambda: passFile(filename, exName))
+        button.grid(row=0, column=0, padx=5, pady=5)
+
+        label = ttk.Label(self, textvariable=exName, background="white", anchor="center")
+        label.grid(row=0, column=1, padx=10, pady=5)
 
 
 class PageTwo(tk.Frame):
@@ -213,11 +227,11 @@ class PageTwo(tk.Frame):
         label.pack(pady=10, padx=10)
 
         button1 = tk.Button(self, text="Back to Home",
-                            command=lambda: controller.show_frame(StartPage))
+                            command=lambda: controller.showFrame(StartPage))
         button1.pack()
 
         button2 = tk.Button(self, text="Page One",
-                            command=lambda: controller.show_frame(PageOne))
+                            command=lambda: controller.showFrame(Excel))
         button2.pack()
 
 
