@@ -4,6 +4,11 @@ import matplotlib
 import careers
 import charts
 
+# TODO: Add Excel file upload
+# TODO: Add Excel file conversion
+# TODO: Add table export
+# TODO: Add selection in table
+
 matplotlib.use('TkAgg')
 
 toggles = [True] * len(careers.fullCareerArr)
@@ -44,10 +49,6 @@ def tableView(trv):
     trv.config(displaycolumns=display)
 
 
-# TODO: Add Excel file upload
-# TODO: Add Excel file conversion
-# TODO: Add table export
-# TODO: Add selection in table
 class App(tk.Tk):
     def __init__(self, *args, **kwargs):
         tk.Tk.__init__(self, *args, **kwargs)
