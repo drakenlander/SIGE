@@ -36,7 +36,6 @@ def tableView(trv):
 
 # TODO: Add Excel file upload
 # TODO: Add Excel file conversion
-# TODO: Fix 'uber_id' filter
 # TODO: Improve tableView styling
 class App(tk.Tk):
     def __init__(self, *args, **kwargs):
@@ -281,9 +280,6 @@ class Columns(tk.Frame):
                 col_toggles[k] = True
 
             careers.clearColumnArr()
-
-        tk.Checkbutton(columns_frame, text="uber_id", background="white", anchor="w",
-                       command=lambda: buttonToggle(col_toggles, 0, "uber_id")).pack(fill="x", pady=5)
 
         tk.Checkbutton(columns_frame, text="id", background="white", anchor="w",
                        command=lambda: buttonToggle(col_toggles, 1, "id")).pack(fill="x", pady=5)
