@@ -36,8 +36,9 @@ def tableView(trv):
 
 # TODO: Add Excel file upload
 # TODO: Add Excel file conversion
-# TODO: Fix 'uber_id' filter
-# TODO: Improve tableView styling
+# TODO: Add table export
+# TODO: Add selection in table
+# TODO: Improve table styling
 class App(tk.Tk):
     def __init__(self, *args, **kwargs):
         tk.Tk.__init__(self, *args, **kwargs)
@@ -81,17 +82,17 @@ class App(tk.Tk):
         trv.column("9", width=100, anchor='c')
         trv.column("10", width=175, anchor='c')
         trv.column("11", width=200, anchor='w')
-        trv.heading("1", text="uber_id")
-        trv.heading("2", text="id")
-        trv.heading("3", text="Nombre_Graduado")
-        trv.heading("4", text="Documento_de_identidad")
-        trv.heading("5", text="Graduacion")
-        trv.heading("6", text="Titulo_y_grado_otorgado")
-        trv.heading("7", text="Institucion_Emisora")
+        trv.heading("1", text="#")
+        trv.heading("2", text="ID")
+        trv.heading("3", text="Nombre del Graduado")
+        trv.heading("4", text="Documento de Identidad")
+        trv.heading("5", text="Graduación")
+        trv.heading("6", text="Título y Grado Otorgado")
+        trv.heading("7", text="Institución Emisora")
         trv.heading("8", text="Tomo")
-        trv.heading("9", text="Folio_y_numero")
-        trv.heading("10", text="Fecha_de_emision_del_titulo")
-        trv.heading("11", text="Plan_de_estudios")
+        trv.heading("9", text="Folio y Número")
+        trv.heading("10", text="Fecha de Emisión del Título")
+        trv.heading("11", text="Plan de Estudios")
 
         pg_menu.add_command(label="Chart from DB", command=lambda: self.showFrame(StartPage))
         pg_menu.add_command(label="Visualize DB", command=lambda: [tableView(trv), self.showFrame(Table)])
@@ -282,10 +283,7 @@ class Columns(tk.Frame):
 
             careers.clearColumnArr()
 
-        tk.Checkbutton(columns_frame, text="uber_id", background="white", anchor="w",
-                       command=lambda: buttonToggle(col_toggles, 0, "uber_id")).pack(fill="x", pady=5)
-
-        tk.Checkbutton(columns_frame, text="id", background="white", anchor="w",
+        tk.Checkbutton(columns_frame, text="ID", background="white", anchor="w",
                        command=lambda: buttonToggle(col_toggles, 1, "id")).pack(fill="x", pady=5)
 
         tk.Checkbutton(columns_frame, text="Nombre del Graduado", background="white", anchor="w",

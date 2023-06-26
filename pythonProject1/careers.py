@@ -1,4 +1,3 @@
-import numpy as np
 import psycopg2 as psycopg2
 
 conn = psycopg2.connect(
@@ -44,7 +43,8 @@ fullColumnArr = ["uber_id",  # 0
                  "folio_y_numero",  # 8
                  "fecha_de_emision_del_titulo",  # 9
                  "plan_de_estudios"]  # 10
-columnArr = [0] * len(fullColumnArr)
+columnArr = ["0"] * len(fullColumnArr)
+columnArr[0] = 'uber_id'
 
 
 def tabulate(carArr, colArr):
@@ -59,8 +59,6 @@ def tabulate(carArr, colArr):
 
         for r in cursor:
             r_set.append(r)
-
-    print("results: ", r_set)
 
     return r_set
 
@@ -150,12 +148,16 @@ def addColumn(column):
 def removeColumn(column):
     for i in range(len(columnArr)):
         if columnArr[i] == column:
-            columnArr[i] = 0
+            columnArr[i] = "0"
+
+    columnArr[0] = 'uber_id'
 
 
 def clearColumnArr():
     for i in range(len(columnArr)):
-        columnArr[i] = 0
+        columnArr[i] = "0"
+
+    columnArr[0] = 'uber_id'
 
 
 '''
