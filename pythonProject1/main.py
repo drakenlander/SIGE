@@ -38,7 +38,6 @@ def tableView(trv):
 # TODO: Add Excel file conversion
 # TODO: Add table export
 # TODO: Add selection in table
-# TODO: Improve table styling
 class App(tk.Tk):
     def __init__(self, *args, **kwargs):
         tk.Tk.__init__(self, *args, **kwargs)
