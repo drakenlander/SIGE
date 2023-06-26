@@ -24,6 +24,8 @@ def passFile(f, v):
 
 
 def tableView(trv):
+    display = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
+
     r_set = careers.tabulate(careers.careerArr, careers.columnArr)
 
     for r in trv.get_children():
@@ -32,6 +34,14 @@ def tableView(trv):
     for dt in r_set:
         trv.insert("", "end", iid=dt[0], text=dt[0], values=(dt[0], dt[1], dt[2], dt[3], dt[4], dt[5], dt[6],
                                                              dt[7], dt[8], dt[9], dt[10]))
+
+    for col in range(len(r_set[0])):
+        if r_set[0][col] == 0 or r_set[0][col] == "0":
+            display[col] = 999
+
+    display = [i for i in display if i != 999]
+
+    trv.config(displaycolumns=display)
 
 
 # TODO: Add Excel file upload
