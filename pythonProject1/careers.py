@@ -1,3 +1,4 @@
+import numpy as np
 import psycopg2 as psycopg2
 
 conn = psycopg2.connect(
@@ -32,17 +33,34 @@ fullCareerArr = [["Administración de Empresas", "%Administraci%"],  # 0
                  ["International Development", "%International%"]]  # 17
 # careerArr = [fullCareerArr[3], fullCareerArr[7], fullCareerArr[10], fullCareerArr[15]]
 careerArr = []
+fullColumnArr = ["uber_id",  # 0
+                 "id",  # 1
+                 "nombre_graduado",  # 2
+                 "documento_de_identidad",  # 3
+                 "graduacion",  # 4
+                 "titulo_y_grado_otorgado",  # 5
+                 "institucion_emisora",  # 6
+                 "tomo",  # 7
+                 "folio_y_numero",  # 8
+                 "fecha_de_emision_del_titulo",  # 9
+                 "plan_de_estudios"]  # 10
+columnArr = [0] * len(fullColumnArr)
 
 
-def tabulate(arr):
+def tabulate(carArr, colArr):
+    columnList = ', '.join(str(i) for i in colArr)
+
     r_set = []
 
-    for i in range(len(arr)):
-        q = '''SELECT * FROM uber_grad WHERE "Titulo_y_grado_otorgado" LIKE %s;'''
-        cursor.execute(q, (arr[i][1],))
+    for i in range(len(carArr)):
+        formattedCar = "'" + carArr[i][1] + "'"
+        q = '''SELECT {0} FROM uber_grad WHERE "titulo_y_grado_otorgado" LIKE {1};'''.format(columnList, formattedCar)
+        cursor.execute(q)
 
         for r in cursor:
             r_set.append(r)
+
+    print("results: ", r_set)
 
     return r_set
 
@@ -65,7 +83,7 @@ def getByYear(query, y, career):
     for n in cursor:
         res.append(n)
 
-    cursor.execute('''SELECT * FROM uber_grad WHERE "Titulo_y_grado_otorgado" LIKE %s;''', career)
+    cursor.execute('''SELECT * FROM uber_grad WHERE "titulo_y_grado_otorgado" LIKE %s;''', career)
 
     for m in cursor:
         pRes.append(m)
@@ -77,10 +95,10 @@ def getByYear(query, y, career):
 def select(e, y):
     legendArr.append(e[0])
 
-    q = '''SELECT * FROM uber_grad WHERE "Titulo_y_grado_otorgado" LIKE %s;'''
+    q = '''SELECT * FROM uber_grad WHERE "titulo_y_grado_otorgado" LIKE %s;'''
     getByCareer(q, (e[1],))
 
-    yearQ = '''SELECT * FROM uber_grad WHERE "Graduacion" > %s AND "Titulo_y_grado_otorgado" LIKE %s;'''
+    yearQ = '''SELECT * FROM uber_grad WHERE "graduacion" > %s AND "titulo_y_grado_otorgado" LIKE %s;'''
     getByYear(yearQ, y, (e[1],))
 
     # for k in range(len(lenRes)):
@@ -120,6 +138,24 @@ def getLength():
     length = len(lenRes)
 
     return length
+
+
+def addColumn(column):
+    for i in range(len(fullColumnArr)):
+        if fullColumnArr[i] == column:
+            # columnArr.append(fullColumnArr[i])
+            columnArr[i] = fullColumnArr[i]
+
+
+def removeColumn(column):
+    for i in range(len(columnArr)):
+        if columnArr[i] == column:
+            columnArr[i] = 0
+
+
+def clearColumnArr():
+    for i in range(len(columnArr)):
+        columnArr[i] = 0
 
 
 '''

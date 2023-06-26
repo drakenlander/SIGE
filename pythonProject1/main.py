@@ -7,6 +7,7 @@ import charts
 matplotlib.use('TkAgg')
 
 toggles = [True] * len(careers.fullCareerArr)
+col_toggles = [True] * 11
 years = ["2011", "2012", "2013", "2014", "2015", "2016", "2017", "2018", "2019", "2020", "2021", "2022", "2023"]
 exFile = [""]
 
@@ -23,7 +24,7 @@ def passFile(f, v):
 
 
 def tableView(trv):
-    r_set = careers.tabulate(careers.careerArr)
+    r_set = careers.tabulate(careers.careerArr, careers.columnArr)
 
     for r in trv.get_children():
         trv.delete(r)
@@ -35,8 +36,8 @@ def tableView(trv):
 
 # TODO: Add Excel file upload
 # TODO: Add Excel file conversion
-# TODO: Add column filter in tableView
-# TODO: Add 'orderBy' buttons in tableView
+# TODO: Fix 'uber_id' filter
+# TODO: Improve tableView styling
 class App(tk.Tk):
     def __init__(self, *args, **kwargs):
         tk.Tk.__init__(self, *args, **kwargs)
@@ -48,7 +49,7 @@ class App(tk.Tk):
 
         self.frames = {}
 
-        for F in (StartPage, Table, Excel, PageTwo):
+        for F in (StartPage, Table, Columns, Excel, PageTwo):
             frame = F(container, self)
             self.frames[F] = frame
             frame.grid(row=0, column=0, sticky="nsew")
@@ -93,8 +94,8 @@ class App(tk.Tk):
         trv.heading("11", text="Plan_de_estudios")
 
         pg_menu.add_command(label="Chart from DB", command=lambda: self.showFrame(StartPage))
-        pg_menu.add_command(label="Visualize DB", command=lambda: [tableView(trv),
-                                                                   self.showFrame(Table)])
+        pg_menu.add_command(label="Visualize DB", command=lambda: [tableView(trv), self.showFrame(Table)])
+        pg_menu.add_command(label="Filter by column", command=lambda: self.showFrame(Columns))
         menubar.add_cascade(
             label="PostgreSQL",
             menu=pg_menu,
@@ -167,9 +168,8 @@ class StartPage(tk.Frame):
         tk.Label(a_careers_frame, background="white").pack()
         tk.Label(b_careers_frame, background="white").pack()
 
-        one = tk.Checkbutton(a_careers_frame, text="Administración de Empresas", background="white", anchor="w",
-                             command=lambda: buttonToggle(toggles, 0, "Administración de Empresas"))
-        one.pack(fill="x", pady=5)
+        tk.Checkbutton(a_careers_frame, text="Administración de Empresas", background="white", anchor="w",
+                       command=lambda: buttonToggle(toggles, 0, "Administración de Empresas")).pack(fill="x", pady=5)
 
         tk.Checkbutton(a_careers_frame, text="Arquitectura", background="white", anchor="w",
                        command=lambda: buttonToggle(toggles, 1, "Arquitectura")).pack(fill="x", pady=5)
@@ -252,6 +252,72 @@ class Table(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent, background="white")
         self.controller = controller
+
+
+class Columns(tk.Frame):
+    def __init__(self, parent, controller):
+        tk.Frame.__init__(self, parent, background="white")
+        self.controller = controller
+
+        columns_frame = tk.Frame(self, background="white")
+        columns_frame.pack(side="left", padx=50)
+
+        def buttonToggle(col_toggle, n, column):
+            if col_toggle[n]:
+                careers.addColumn(column)
+                col_toggle[n] = False
+            else:
+                careers.removeColumn(column)
+                col_toggle[n] = True
+
+        def reset(col_frame):
+            columns_children_widgets = col_frame.winfo_children()
+
+            for i in range(len(columns_children_widgets)):
+                if isinstance(columns_children_widgets[i], tk.Checkbutton):
+                    columns_children_widgets[i].deselect()
+
+            for k in range(len(col_toggles)):
+                col_toggles[k] = True
+
+            careers.clearColumnArr()
+
+        tk.Checkbutton(columns_frame, text="uber_id", background="white", anchor="w",
+                       command=lambda: buttonToggle(col_toggles, 0, "uber_id")).pack(fill="x", pady=5)
+
+        tk.Checkbutton(columns_frame, text="id", background="white", anchor="w",
+                       command=lambda: buttonToggle(col_toggles, 1, "id")).pack(fill="x", pady=5)
+
+        tk.Checkbutton(columns_frame, text="Nombre del Graduado", background="white", anchor="w",
+                       command=lambda: buttonToggle(col_toggles, 2, "nombre_graduado")).pack(fill="x", pady=5)
+
+        tk.Checkbutton(columns_frame, text="Documento de Identidad", background="white", anchor="w",
+                       command=lambda: buttonToggle(col_toggles, 3, "documento_de_identidad")).pack(fill="x", pady=5)
+
+        tk.Checkbutton(columns_frame, text="Año de Graduación", background="white", anchor="w",
+                       command=lambda: buttonToggle(col_toggles, 4, "graduacion")).pack(fill="x", pady=5)
+
+        tk.Checkbutton(columns_frame, text="Título y Grado Otorgado", background="white", anchor="w",
+                       command=lambda: buttonToggle(col_toggles, 5, "titulo_y_grado_otorgado")).pack(fill="x", pady=5)
+
+        tk.Checkbutton(columns_frame, text="Institución Emisora", background="white", anchor="w",
+                       command=lambda: buttonToggle(col_toggles, 6, "institucion_emisora")).pack(fill="x", pady=5)
+
+        tk.Checkbutton(columns_frame, text="Tomo", background="white", anchor="w",
+                       command=lambda: buttonToggle(col_toggles, 7, "tomo")).pack(fill="x", pady=5)
+
+        tk.Checkbutton(columns_frame, text="Folio y Número", background="white", anchor="w",
+                       command=lambda: buttonToggle(col_toggles, 8, "folio_y_numero")).pack(fill="x", pady=5)
+
+        tk.Checkbutton(columns_frame, text="Fecha de Emisión del Título", background="white", anchor="w",
+                       command=lambda: buttonToggle(col_toggles, 9, "fecha_de_emision_del_titulo")).pack(fill="x",
+                                                                                                         pady=5)
+
+        tk.Checkbutton(columns_frame, text="Plan de Estudios", background="white", anchor="w",
+                       command=lambda: buttonToggle(col_toggles, 10, "plan_de_estudios")).pack(fill="x", pady=5)
+
+        tk.Button(columns_frame, text="Reset array...", background="white", anchor="w",
+                  command=lambda: reset(columns_frame)).pack(fill="x", pady=5)
 
 
 class Excel(tk.Frame):
