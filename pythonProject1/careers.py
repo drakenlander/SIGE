@@ -15,7 +15,7 @@ yearDiffRes = []
 fullCareerArr = [["Administración de Empresas", "%Administraci%"],  # 0
                  ["Arquitectura", "%Arquitect%"],  # 1
                  ["Cirujano Dentista", "%Dentista%"],  # 2
-                 ["Comunicación y Rel. Públicas", "%Comunicaci%"],  # 3
+                 ["Comunicación y Rel. Públicas", "%Públicas%"],  # 3
                  ["Contabilidad y Finanzas", "%Contabilidad%"],  # 4
                  ["Derecho", "%Derecho%"],  # 5
                  ["Diplomacia y Rel. Internacionales", "%Diplomacia%"],  # 6
@@ -32,6 +32,19 @@ fullCareerArr = [["Administración de Empresas", "%Administraci%"],  # 0
                  ["International Development", "%International%"]]  # 17
 # careerArr = [fullCareerArr[3], fullCareerArr[7], fullCareerArr[10], fullCareerArr[15]]
 careerArr = []
+
+
+def tabulate(arr):
+    r_set = []
+
+    for i in range(len(arr)):
+        q = '''SELECT * FROM uber_grad WHERE "Titulo_y_grado_otorgado" LIKE %s;'''
+        cursor.execute(q, (arr[i][1],))
+
+        for r in cursor:
+            r_set.append(r)
+
+    return r_set
 
 
 def getByCareer(query, career):
@@ -67,7 +80,7 @@ def select(e, y):
     q = '''SELECT * FROM uber_grad WHERE "Titulo_y_grado_otorgado" LIKE %s;'''
     getByCareer(q, (e[1],))
 
-    yearQ = '''SELECT * FROM uber_grad WHERE "Graduacion" > %s AND "Titulo_y_grado_otorgado" LIKE %s'''
+    yearQ = '''SELECT * FROM uber_grad WHERE "Graduacion" > %s AND "Titulo_y_grado_otorgado" LIKE %s;'''
     getByYear(yearQ, y, (e[1],))
 
     # for k in range(len(lenRes)):

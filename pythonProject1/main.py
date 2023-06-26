@@ -22,8 +22,21 @@ def passFile(f, v):
         v.set(f[-1])
 
 
+def tableView(trv):
+    r_set = careers.tabulate(careers.careerArr)
+
+    for r in trv.get_children():
+        trv.delete(r)
+
+    for dt in r_set:
+        trv.insert("", "end", iid=dt[0], text=dt[0], values=(dt[0], dt[1], dt[2], dt[3], dt[4], dt[5], dt[6],
+                                                             dt[7], dt[8], dt[9], dt[10]))
+
+
 # TODO: Add Excel file upload
 # TODO: Add Excel file conversion
+# TODO: Add column filter in tableView
+# TODO: Fix tableView styling
 class App(tk.Tk):
     def __init__(self, *args, **kwargs):
         tk.Tk.__init__(self, *args, **kwargs)
@@ -35,7 +48,7 @@ class App(tk.Tk):
 
         self.frames = {}
 
-        for F in (StartPage, Excel, PageTwo):
+        for F in (StartPage, Table, Excel, PageTwo):
             frame = F(container, self)
             self.frames[F] = frame
             frame.grid(row=0, column=0, sticky="nsew")
@@ -46,8 +59,42 @@ class App(tk.Tk):
         pg_menu = tk.Menu(menubar, tearoff=False)
         ex_menu = tk.Menu(menubar, tearoff=False)
 
+        trv = ttk.Treeview(self.frames[Table], selectmode='browse')
+        trv["columns"] = ("1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11")
+        trv['show'] = 'headings'
+        horScrollBar = ttk.Scrollbar(self.frames[Table], orient="horizontal", command=trv.xview)
+        verScrollBar = ttk.Scrollbar(self.frames[Table], orient="vertical", command=trv.yview)
+        horScrollBar.pack(side="bottom", fill="x")
+        verScrollBar.pack(side="right", fill="y")
+        trv.configure(xscrollcommand=horScrollBar.set, yscrollcommand=verScrollBar.set)
+        trv.pack()
+
+        trv.column("1", width=50, anchor='c')
+        trv.column("2", width=50, anchor='c')
+        trv.column("3", width=225, anchor='w')
+        trv.column("4", width=175, anchor='w')
+        trv.column("5", width=100, anchor='c')
+        trv.column("6", width=325, anchor='w')
+        trv.column("7", width=175, anchor='w')
+        trv.column("8", width=75, anchor='c')
+        trv.column("9", width=100, anchor='c')
+        trv.column("10", width=175, anchor='c')
+        trv.column("11", width=200, anchor='w')
+        trv.heading("1", text="uber_id")
+        trv.heading("2", text="id")
+        trv.heading("3", text="Nombre_Graduado")
+        trv.heading("4", text="Documento_de_identidad")
+        trv.heading("5", text="Graduacion")
+        trv.heading("6", text="Titulo_y_grado_otorgado")
+        trv.heading("7", text="Institucion_Emisora")
+        trv.heading("8", text="Tomo")
+        trv.heading("9", text="Folio_y_numero")
+        trv.heading("10", text="Fecha_de_emision_del_titulo")
+        trv.heading("11", text="Plan_de_estudios")
+
         pg_menu.add_command(label="Chart from DB", command=lambda: self.showFrame(StartPage))
-        pg_menu.add_command(label="Visualize DB")
+        pg_menu.add_command(label="Visualize DB", command=lambda: [tableView(trv),
+                                                                   self.showFrame(Table)])
         menubar.add_cascade(
             label="PostgreSQL",
             menu=pg_menu,
@@ -199,6 +246,12 @@ class StartPage(tk.Frame):
 
         ttk.Button(charts_frame, text="Nested Pie Chart", command=lambda: charts.nestedPieChart()).pack(fill="x",
                                                                                                         pady=5)
+
+
+class Table(tk.Frame):
+    def __init__(self, parent, controller):
+        tk.Frame.__init__(self, parent, background="white")
+        self.controller = controller
 
 
 class Excel(tk.Frame):
