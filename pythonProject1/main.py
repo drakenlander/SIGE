@@ -36,7 +36,7 @@ def tableView(trv):
 # TODO: Add Excel file upload
 # TODO: Add Excel file conversion
 # TODO: Add column filter in tableView
-# TODO: Fix tableView styling
+# TODO: Add 'orderBy' buttons in tableView
 class App(tk.Tk):
     def __init__(self, *args, **kwargs):
         tk.Tk.__init__(self, *args, **kwargs)
@@ -67,7 +67,7 @@ class App(tk.Tk):
         horScrollBar.pack(side="bottom", fill="x")
         verScrollBar.pack(side="right", fill="y")
         trv.configure(xscrollcommand=horScrollBar.set, yscrollcommand=verScrollBar.set)
-        trv.pack()
+        trv.pack(side="left", fill="both")
 
         trv.column("1", width=50, anchor='c')
         trv.column("2", width=50, anchor='c')
