@@ -71,7 +71,7 @@ class App(tk.Tk):
         pg_menu = tk.Menu(menubar, tearoff=False)
         ex_menu = tk.Menu(menubar, tearoff=False)
 
-        trv = ttk.Treeview(self.frames[Table], selectmode='browse')
+        trv = ttk.Treeview(self.frames[Table])
         trv["columns"] = ("1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11")
         trv['show'] = 'headings'
         horScrollBar = ttk.Scrollbar(self.frames[Table], orient="horizontal", command=trv.xview)
@@ -81,16 +81,18 @@ class App(tk.Tk):
         trv.configure(xscrollcommand=horScrollBar.set, yscrollcommand=verScrollBar.set)
         trv.pack(side="left", fill="both")
 
-        def copyItem(a):
-            curItem = trv.focus()
-            selection = trv.item(curItem).get("values")
+        def select():
+            curItems = trv.selection()
             copy = ""
 
-            for i in selection:
-                if i != 0:
-                    copy = copy + str(i) + ", "
+            for i in curItems:
+                row = trv.item(i).get("values")
 
-            copy = copy[:-2]
+                for j in row:
+                    if j != 0:
+                        copy = copy + str(j) + ", "
+
+                copy = copy[:-2] + "\n"
 
             self.clipboard_clear()
             self.clipboard_append(copy)
@@ -118,7 +120,7 @@ class App(tk.Tk):
         trv.heading("10", text="Fecha de Emisión del Título")
         trv.heading("11", text="Plan de Estudios")
 
-        trv.bind('<ButtonRelease-1>', copyItem)
+        trv.bind('<ButtonRelease-1>', lambda e: select())
 
         pg_menu.add_command(label="Chart from DB", command=lambda: self.showFrame(StartPage))
         pg_menu.add_command(label="Visualize DB", command=lambda: [tableView(trv), self.showFrame(Table)])
