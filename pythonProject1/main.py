@@ -5,8 +5,9 @@ import careers
 import charts
 
 # TODO: Add Excel file upload
-# TODO: Add Excel file conversion
+# TODO: Add Excel file conversion (?)
 # TODO: Add table Year Filter
+# TODO: Add custom .csv file generation
 
 matplotlib.use('TkAgg')
 
@@ -91,14 +92,15 @@ class App(tk.Tk):
                 sel = select()
                 copySelection(sel)
 
-                file = open("table.txt", "w", encoding="utf-8")
+                file = open("table.csv", "w", encoding="utf-8")
                 file.write(sel)
 
             else:
                 sel = select()
 
-                file = open("table.txt", "w", encoding="utf-8")
-                file.write(sel)
+                if sel != "":
+                    file = open("table.csv", "w", encoding="utf-8")
+                    file.write(sel)
 
         def select():
             curItems = trv.selection()
