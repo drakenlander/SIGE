@@ -6,8 +6,7 @@ import charts
 
 # TODO: Add Excel file upload
 # TODO: Add Excel file conversion
-# TODO: Add table export
-# TODO: Add selection in table
+# TODO: Add table Year Filter
 
 matplotlib.use('TkAgg')
 
@@ -67,10 +66,6 @@ class App(tk.Tk):
 
         self.showFrame(StartPage)
 
-        menubar = tk.Menu(self)
-        pg_menu = tk.Menu(menubar, tearoff=False)
-        ex_menu = tk.Menu(menubar, tearoff=False)
-
         trv = ttk.Treeview(self.frames[Table])
         trv["columns"] = ("1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11")
         trv['show'] = 'headings'
@@ -80,6 +75,23 @@ class App(tk.Tk):
         verScrollBar.pack(side="right", fill="y")
         trv.configure(xscrollcommand=horScrollBar.set, yscrollcommand=verScrollBar.set)
         trv.pack(side="left", fill="both")
+
+        def writeFile(selectAll):
+            if selectAll:
+                for i in trv.get_children():
+                    trv.selection_add(i)
+
+                sel = select()
+                copySelection(sel)
+
+                file = open("table.txt", "w", encoding="utf-8")
+                file.write(sel)
+
+            else:
+                sel = select()
+
+                file = open("table.txt", "w", encoding="utf-8")
+                file.write(sel)
 
         def select():
             curItems = trv.selection()
@@ -94,8 +106,13 @@ class App(tk.Tk):
 
                 copy = copy[:-2] + "\n"
 
+            copy = copy[:-1]
+
+            return copy
+
+        def copySelection(selection):
             self.clipboard_clear()
-            self.clipboard_append(copy)
+            self.clipboard_append(selection)
 
         trv.column("1", width=50, anchor='c')
         trv.column("2", width=50, anchor='c')
@@ -120,24 +137,41 @@ class App(tk.Tk):
         trv.heading("10", text="Fecha de Emisión del Título")
         trv.heading("11", text="Plan de Estudios")
 
-        trv.bind('<ButtonRelease-1>', lambda e: select())
+        trv.bind('<ButtonRelease-1>', lambda e: copySelection(select()))
 
-        pg_menu.add_command(label="Chart from DB", command=lambda: self.showFrame(StartPage))
-        pg_menu.add_command(label="Visualize DB", command=lambda: [tableView(trv), self.showFrame(Table)])
-        pg_menu.add_command(label="Filter by column", command=lambda: self.showFrame(Columns))
+        menubar = tk.Menu(self)
+        pg_menu = tk.Menu(menubar, tearoff=False)
+        tableMenu = tk.Menu(pg_menu, tearoff=False)
+        csvMenu = tk.Menu(tableMenu, tearoff=False)
+        ex_menu = tk.Menu(menubar, tearoff=False)
+
         menubar.add_cascade(
             label="PostgreSQL",
             menu=pg_menu,
             underline=0
         )
-
-        ex_menu.add_command(label="Chart from Spreadsheet", command=lambda: self.showFrame(Excel))
-        ex_menu.add_command(label="Upload Spreadsheet", command=lambda: uploadAction())
         menubar.add_cascade(
             label="Microsoft Excel",
             menu=ex_menu,
             underline=0
         )
+
+        pg_menu.add_command(label="Chart from DB", command=lambda: self.showFrame(StartPage))
+        pg_menu.add_cascade(
+            label="Table View",
+            menu=tableMenu
+        )
+        tableMenu.add_command(label="Visualize DB", command=lambda: [tableView(trv), self.showFrame(Table)])
+        tableMenu.add_command(label="Filter by column", command=lambda: self.showFrame(Columns))
+        tableMenu.add_cascade(
+            label="Generate .csv",
+            menu=csvMenu
+        )
+        csvMenu.add_command(label="All rows", command=lambda: writeFile(True))
+        csvMenu.add_command(label="Selected rows only", command=lambda: writeFile(False))
+
+        ex_menu.add_command(label="Chart from Spreadsheet", command=lambda: self.showFrame(Excel))
+        ex_menu.add_command(label="Upload Spreadsheet", command=lambda: uploadAction())
 
         self.configure(menu=menubar, background="white")
 
