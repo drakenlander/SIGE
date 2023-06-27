@@ -14,6 +14,7 @@ toggles = [True] * len(careers.fullCareerArr)
 col_toggles = [True] * 11
 years = ["2011", "2012", "2013", "2014", "2015", "2016", "2017", "2018", "2019", "2020", "2021", "2022", "2023"]
 exFile = [""]
+lastFrameRemembrance = []
 
 
 def uploadAction():
@@ -75,6 +76,12 @@ class App(tk.Tk):
         verScrollBar.pack(side="right", fill="y")
         trv.configure(xscrollcommand=horScrollBar.set, yscrollcommand=verScrollBar.set)
         trv.pack(side="left", fill="both")
+
+        def checkTableView():
+            if lastFrameRemembrance[-1] != "<class '__main__.Table'>":
+                tableView(trv)
+
+                self.showFrame(Table)
 
         def writeFile(selectAll):
             if selectAll:
@@ -167,8 +174,8 @@ class App(tk.Tk):
             label="Generate .csv",
             menu=csvMenu
         )
-        csvMenu.add_command(label="All rows", command=lambda: writeFile(True))
-        csvMenu.add_command(label="Selected rows only", command=lambda: writeFile(False))
+        csvMenu.add_command(label="All rows", command=lambda: [tableView(trv), self.showFrame(Table), writeFile(True)])
+        csvMenu.add_command(label="Selected rows only", command=lambda: [checkTableView(), writeFile(False)])
 
         ex_menu.add_command(label="Chart from Spreadsheet", command=lambda: self.showFrame(Excel))
         ex_menu.add_command(label="Upload Spreadsheet", command=lambda: uploadAction())
@@ -178,6 +185,8 @@ class App(tk.Tk):
     def showFrame(self, cont):
         frame = self.frames[cont]
         frame.tkraise()
+
+        lastFrameRemembrance.append(str(cont))
 
 
 class StartPage(tk.Frame):
