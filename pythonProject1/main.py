@@ -81,6 +81,20 @@ class App(tk.Tk):
         trv.configure(xscrollcommand=horScrollBar.set, yscrollcommand=verScrollBar.set)
         trv.pack(side="left", fill="both")
 
+        def copyItem(a):
+            curItem = trv.focus()
+            selection = trv.item(curItem).get("values")
+            copy = ""
+
+            for i in selection:
+                if i != 0:
+                    copy = copy + str(i) + ", "
+
+            copy = copy[:-2]
+
+            self.clipboard_clear()
+            self.clipboard_append(copy)
+
         trv.column("1", width=50, anchor='c')
         trv.column("2", width=50, anchor='c')
         trv.column("3", width=225, anchor='w')
@@ -103,6 +117,8 @@ class App(tk.Tk):
         trv.heading("9", text="Folio y Número")
         trv.heading("10", text="Fecha de Emisión del Título")
         trv.heading("11", text="Plan de Estudios")
+
+        trv.bind('<ButtonRelease-1>', copyItem)
 
         pg_menu.add_command(label="Chart from DB", command=lambda: self.showFrame(StartPage))
         pg_menu.add_command(label="Visualize DB", command=lambda: [tableView(trv), self.showFrame(Table)])
