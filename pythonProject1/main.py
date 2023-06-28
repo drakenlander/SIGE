@@ -142,7 +142,7 @@ class App(tk.Tk):
             print("select:", curItems)
 
             for i in curItems:
-                row = table.item(i).get("values")
+                row = tale.item(i).get("values")
 
                 for j in row:
                     if j != 0:
