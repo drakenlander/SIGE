@@ -6,10 +6,14 @@ import matplotlib
 import careers
 import charts
 
-# TODO: Add Excel file visualization with filtering
-# TODO: Add Excel charting algorithms
-# TODO: Add Excel file conversion (?)
+# TODO: Add Excel file conversion (!)
+# TODO: Alter careers.py to access any DB table (!)
+# 1. Take Excel
+# 2. Generate DB table with SQLizer
+# 3. Access generated table with careers.py
 # TODO: Add table Year Filter
+# TODO: Have all columns automatically selected for DB visualization
+# TODO: Fix r_set warning
 
 matplotlib.use('TkAgg')
 
@@ -27,7 +31,7 @@ def uploadAction(exTrv):
     for row in exTrv.get_children():
         exTrv.delete(row)
 
-    df = pd.read_excel(exFile[-1])
+    df = pd.read_excel(exFile[-1], sheet_name=0)
     headers = list(df)
 
     exTrv['columns'] = headers
@@ -36,7 +40,7 @@ def uploadAction(exTrv):
     r_set = df.to_numpy().tolist()
 
     for i in headers:
-        exTrv.column(i, width=100, anchor='c')
+        exTrv.column(i, anchor='w')
         exTrv.heading(i, text=str(i))
 
     for dt in r_set:
@@ -139,7 +143,6 @@ class App(tk.Tk):
         def select(table):
             curItems = table.selection()
             copy = ""
-            print("select:", curItems)
 
             for i in curItems:
                 row = table.item(i).get("values")
@@ -155,7 +158,6 @@ class App(tk.Tk):
             return copy
 
         def copySelection(selection):
-            print("copy:", selection)
             self.clipboard_clear()
             self.clipboard_append(selection)
 
