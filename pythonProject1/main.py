@@ -1,12 +1,12 @@
 import tkinter as tk
 import pandas as pd
+import sqlizer
+import matplotlib
 from tkinter import ttk, filedialog
 from datetime import datetime
-import matplotlib
 import careers
 import charts
 
-# TODO: Add Excel file conversion (!)
 # TODO: Alter careers.py to access any DB table (!)
 # 1. Take Excel
 # 2. Generate DB table with SQLizer
@@ -50,6 +50,17 @@ def uploadAction(exTrv):
     return df
 
 
+def convert():
+    with open(exFile[-1], mode='rb') as file_content:
+        converter = sqlizer.File(file_content, sqlizer.DatabaseType.PostgreSQL, sqlizer.FileType.XLSX, exFile[-1],
+                                 getNow())
+        converter.convert(wait=True)
+        q = converter.download_result_file().text
+        print(q)
+
+        return q
+
+
 def passFileName(f, v):
     if exFile[-1] != "":
         f.append(exFile[-1])
@@ -77,6 +88,13 @@ def tableView(trv):
     trv.config(displaycolumns=display)
 
 
+def getNow():
+    now = datetime.now()
+    dt_string = "logdate_" + now.strftime("%d%m%Y_%H%M%S")
+
+    return dt_string
+
+
 class App(tk.Tk):
     def __init__(self, *args, **kwargs):
         tk.Tk.__init__(self, *args, **kwargs)
@@ -88,7 +106,7 @@ class App(tk.Tk):
 
         self.frames = {}
 
-        for F in (StartPage, Table, Columns, ExcelCharts, ExcelTable):
+        for F in (StartPage, Table, Columns, ExcelConversion, ExcelTable):
             frame = F(container, self)
             self.frames[F] = frame
             frame.grid(row=0, column=0, sticky="nsew")
@@ -120,9 +138,6 @@ class App(tk.Tk):
                 self.showFrame(Table)
 
         def writeFile(selectAll):
-            now = datetime.now()
-            dt_string = now.strftime("%d%m%Y_%H%M%S")
-
             if selectAll:
                 for i in trv.get_children():
                     trv.selection_add(i)
@@ -130,14 +145,14 @@ class App(tk.Tk):
                 sel = select(trv)
                 copySelection(sel)
 
-                file = open(dt_string + ".csv", "w", encoding="utf-8")
+                file = open(getNow() + ".csv", "w", encoding="utf-8")
                 file.write(sel)
 
             else:
                 sel = select(trv)
 
                 if sel != "":
-                    file = open(dt_string + ".csv", "w", encoding="utf-8")
+                    file = open(getNow() + ".csv", "w", encoding="utf-8")
                     file.write(sel)
 
         def select(table):
@@ -218,7 +233,7 @@ class App(tk.Tk):
         csvMenu.add_command(label="All rows", command=lambda: [tableView(trv), self.showFrame(Table), writeFile(True)])
         csvMenu.add_command(label="Selected rows only", command=lambda: [checkTableView(), writeFile(False)])
 
-        ex_menu.add_command(label="Chart from spreadsheet", command=lambda: self.showFrame(ExcelCharts))
+        ex_menu.add_command(label="Convert spreadsheet to DB table", command=lambda: self.showFrame(ExcelConversion))
         ex_menu.add_command(label="Visualize spreadsheet", command=lambda: self.showFrame(ExcelTable))
         ex_menu.add_command(label="Upload spreadsheet", command=lambda: uploadAction(exTrv))
 
@@ -431,7 +446,7 @@ class Columns(tk.Frame):
                   command=lambda: reset(columns_frame)).pack(fill="x", pady=5)
 
 
-class ExcelCharts(tk.Frame):
+class ExcelConversion(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent, background="white")
         self.controller = controller
@@ -443,7 +458,8 @@ class ExcelCharts(tk.Frame):
         exName = tk.StringVar()
         exName.set("No upload yet...")
 
-        button = ttk.Button(self, text="Refresh", command=lambda: passFileName(filename, exName))
+        button = ttk.Button(self, text="Refresh", command=lambda: [careers.selectConversion(convert()),
+                                                                   passFileName(filename, exName)])
         button.grid(row=0, column=0, padx=5, pady=5)
 
         label = ttk.Label(self, textvariable=exName, background="white", anchor="center")

@@ -47,6 +47,11 @@ columnArr = ["0"] * len(fullColumnArr)
 columnArr[0] = 'uber_id'
 
 
+def selectConversion(q):
+    cursor.execute(q)
+    conn.commit()
+
+
 def tabulate(carArr, colArr):
     columnList = ', '.join(str(i) for i in colArr)
 
