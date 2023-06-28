@@ -14,6 +14,7 @@ import charts
 # TODO: Add table Year Filter
 # TODO: Have all columns automatically selected for DB visualization
 # TODO: Fix r_set warning
+# TODO: Fix event warning
 
 matplotlib.use('TkAgg')
 
@@ -22,6 +23,7 @@ col_toggles = [True] * 11
 years = ["2011", "2012", "2013", "2014", "2015", "2016", "2017", "2018", "2019", "2020", "2021", "2022", "2023"]
 exFile = [""]
 lastFrameRemembrance = []
+careers.selection.append(careers.getAllTables()[-1])
 
 
 def uploadAction(exTrv):
@@ -421,6 +423,13 @@ class Columns(tk.Frame):
         def updateCombobox():
             combo.config(values=careers.getAllTables())
             combo.current(len(careers.getAllTables()) - 1)
+
+        def getComboboxSelection(event):
+            careers.selection.clear()
+            selection = combo.get()
+            careers.selection.append(selection)
+
+        combo.bind('<<ComboboxSelected>>', getComboboxSelection)
 
         tk.Checkbutton(columns_frame, text="ID", background="white", anchor="w",
                        command=lambda: buttonToggle(col_toggles, 1, "id")).pack(fill="x", pady=5)

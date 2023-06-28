@@ -46,6 +46,7 @@ fullColumnArr = ["uber_id",  # 0
 columnArr = ["0"] * len(fullColumnArr)
 columnArr[0] = 'uber_id'
 tableArr = []
+selection = []
 
 
 def selectConversion(q):
@@ -71,7 +72,8 @@ def tabulate(carArr, colArr):
 
     for i in range(len(carArr)):
         formattedCar = "'" + carArr[i][1] + "'"
-        q = '''SELECT {0} FROM uber_grad WHERE "titulo_y_grado_otorgado" LIKE {1};'''.format(columnList, formattedCar)
+        q = '''SELECT {0} FROM {1} WHERE "titulo_y_grado_otorgado" LIKE {2};'''.format(columnList, selection[-1],
+                                                                                       formattedCar)
         cursor.execute(q)
 
         for r in cursor:
@@ -80,8 +82,8 @@ def tabulate(carArr, colArr):
     return r_set
 
 
-def getByCareer(query, career):
-    cursor.execute(query, career)
+def getByCareer(query):
+    cursor.execute(query)
     res = []
 
     for n in cursor:
@@ -90,15 +92,17 @@ def getByCareer(query, career):
     lenRes.append(len(res))
 
 
-def getByYear(query, y, career):
-    cursor.execute(query, (y, career))
+def getByYear(query, career):
+    cursor.execute(query)
     res = []
     pRes = []
 
     for n in cursor:
         res.append(n)
 
-    cursor.execute('''SELECT * FROM uber_grad WHERE "titulo_y_grado_otorgado" LIKE %s;''', career)
+    neuQ = '''SELECT * FROM {0} WHERE "titulo_y_grado_otorgado" LIKE {1};'''.format(selection[-1], career)
+
+    cursor.execute(neuQ)
 
     for m in cursor:
         pRes.append(m)
@@ -110,11 +114,13 @@ def getByYear(query, y, career):
 def select(e, y):
     legendArr.append(e[0])
 
-    q = '''SELECT * FROM uber_grad WHERE "titulo_y_grado_otorgado" LIKE %s;'''
-    getByCareer(q, (e[1],))
+    neuCareer = "'" + e[1] + "'"
 
-    yearQ = '''SELECT * FROM uber_grad WHERE "graduacion" > %s AND "titulo_y_grado_otorgado" LIKE %s;'''
-    getByYear(yearQ, y, (e[1],))
+    q = '''SELECT * FROM {0} WHERE "titulo_y_grado_otorgado" LIKE {1};'''.format(selection[-1], neuCareer)
+    getByCareer(q)
+
+    yearQ = '''SELECT * FROM {0} WHERE "graduacion" > {1} AND "titulo_y_grado_otorgado" LIKE {2};'''.format(selection[-1], y, neuCareer)
+    getByYear(yearQ, neuCareer)
 
     # for k in range(len(lenRes)):
     # yearDiffRes.append(lenRes[k] - lenYearRes[k])
