@@ -8,8 +8,8 @@ import careers
 import charts
 
 # TODO: Alter careers.py to access any DB table (!)
-# 1. Take Excel
-# 2. Generate DB table with SQLizer
+# 1. Take Excel (DONE)
+# 2. Generate DB table with SQLizer (DONE)
 # 3. Access generated table with careers.py
 # TODO: Add table Year Filter
 # TODO: Have all columns automatically selected for DB visualization
@@ -52,11 +52,14 @@ def uploadAction(exTrv):
 
 def convert():
     with open(exFile[-1], mode='rb') as file_content:
+        currentGetNow = getNow()
         converter = sqlizer.File(file_content, sqlizer.DatabaseType.PostgreSQL, sqlizer.FileType.XLSX, exFile[-1],
-                                 getNow())
+                                 currentGetNow)
         converter.convert(wait=True)
         q = converter.download_result_file().text
-        print(q)
+
+        file = open("CreateTableQuery_" + currentGetNow + ".txt", "w", encoding="utf-8")
+        file.write(q)
 
         return q
 
