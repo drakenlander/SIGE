@@ -6,7 +6,9 @@ import matplotlib
 import careers
 import charts
 
-# TODO: Add Excel file upload
+# TODO: Add Excel file visualization with filtering
+# TODO: Add Excel file row selection
+# TODO: Add Excel charting algorithms
 # TODO: Add Excel file conversion (?)
 # TODO: Add table Year Filter
 
@@ -19,11 +21,28 @@ exFile = [""]
 lastFrameRemembrance = []
 
 
-def uploadAction():
+def uploadAction(exTrv):
     filename = filedialog.askopenfilename()
     exFile.append(filename)
+
+    for row in exTrv.get_children():
+        exTrv.delete(row)
+
     df = pd.read_excel(exFile[-1])
-    print(df)
+    headers = list(df)
+
+    exTrv['columns'] = headers
+    exTrv['show'] = 'headings'
+
+    r_set = df.to_numpy().tolist()
+
+    for i in headers:
+        exTrv.column(i, width=100, anchor='c')
+        exTrv.heading(i, text=str(i))
+
+    for dt in r_set:
+        v = [r for r in dt]
+        exTrv.insert("", 'end', iid=v[0], values=v)
 
     return df
 
@@ -66,7 +85,7 @@ class App(tk.Tk):
 
         self.frames = {}
 
-        for F in (StartPage, Table, Columns, Excel, PageTwo):
+        for F in (StartPage, Table, Columns, ExcelCharts, ExcelTable):
             frame = F(container, self)
             self.frames[F] = frame
             frame.grid(row=0, column=0, sticky="nsew")
@@ -82,6 +101,14 @@ class App(tk.Tk):
         verScrollBar.pack(side="right", fill="y")
         trv.configure(xscrollcommand=horScrollBar.set, yscrollcommand=verScrollBar.set)
         trv.pack(side="left", fill="both")
+
+        exTrv = ttk.Treeview(self.frames[ExcelTable])
+        exHorScrollBar = ttk.Scrollbar(self.frames[ExcelTable], orient="horizontal", command=exTrv.xview)
+        exVerScrollBar = ttk.Scrollbar(self.frames[ExcelTable], orient="vertical", command=exTrv.yview)
+        exHorScrollBar.pack(side="bottom", fill="x")
+        exVerScrollBar.pack(side="right", fill="y")
+        exTrv.configure(xscrollcommand=exHorScrollBar.set, yscrollcommand=exVerScrollBar.set)
+        exTrv.pack(side="left", fill="both")
 
         def checkTableView():
             if lastFrameRemembrance[-1] != "<class '__main__.Table'>":
@@ -187,8 +214,9 @@ class App(tk.Tk):
         csvMenu.add_command(label="All rows", command=lambda: [tableView(trv), self.showFrame(Table), writeFile(True)])
         csvMenu.add_command(label="Selected rows only", command=lambda: [checkTableView(), writeFile(False)])
 
-        ex_menu.add_command(label="Chart from Spreadsheet", command=lambda: self.showFrame(Excel))
-        ex_menu.add_command(label="Upload Spreadsheet", command=lambda: uploadAction())
+        ex_menu.add_command(label="Chart from spreadsheet", command=lambda: self.showFrame(ExcelCharts))
+        ex_menu.add_command(label="Visualize spreadsheet", command=lambda: self.showFrame(ExcelTable))
+        ex_menu.add_command(label="Upload spreadsheet", command=lambda: uploadAction(exTrv))
 
         self.configure(menu=menubar, background="white")
 
@@ -399,7 +427,7 @@ class Columns(tk.Frame):
                   command=lambda: reset(columns_frame)).pack(fill="x", pady=5)
 
 
-class Excel(tk.Frame):
+class ExcelCharts(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent, background="white")
         self.controller = controller
@@ -418,19 +446,10 @@ class Excel(tk.Frame):
         label.grid(row=0, column=1, padx=10, pady=5)
 
 
-class PageTwo(tk.Frame):
+class ExcelTable(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
-        label = tk.Label(self, text="Page Two!!!")
-        label.pack(pady=10, padx=10)
-
-        button1 = tk.Button(self, text="Back to Home",
-                            command=lambda: controller.showFrame(StartPage))
-        button1.pack()
-
-        button2 = tk.Button(self, text="Page One",
-                            command=lambda: controller.showFrame(Excel))
-        button2.pack()
+        self.controller = controller
 
 
 app = App()
