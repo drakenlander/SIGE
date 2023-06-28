@@ -7,7 +7,6 @@ import careers
 import charts
 
 # TODO: Add Excel file visualization with filtering
-# TODO: Add Excel file row selection
 # TODO: Add Excel charting algorithms
 # TODO: Add Excel file conversion (?)
 # TODO: Add table Year Filter
@@ -124,25 +123,26 @@ class App(tk.Tk):
                 for i in trv.get_children():
                     trv.selection_add(i)
 
-                sel = select()
+                sel = select(trv)
                 copySelection(sel)
 
                 file = open(dt_string + ".csv", "w", encoding="utf-8")
                 file.write(sel)
 
             else:
-                sel = select()
+                sel = select(trv)
 
                 if sel != "":
                     file = open(dt_string + ".csv", "w", encoding="utf-8")
                     file.write(sel)
 
-        def select():
-            curItems = trv.selection()
+        def select(table):
+            curItems = table.selection()
             copy = ""
+            print("select:", curItems)
 
             for i in curItems:
-                row = trv.item(i).get("values")
+                row = table.item(i).get("values")
 
                 for j in row:
                     if j != 0:
@@ -155,6 +155,7 @@ class App(tk.Tk):
             return copy
 
         def copySelection(selection):
+            print("copy:", selection)
             self.clipboard_clear()
             self.clipboard_append(selection)
 
@@ -181,7 +182,8 @@ class App(tk.Tk):
         trv.heading("10", text="Fecha de Emisión del Título")
         trv.heading("11", text="Plan de Estudios")
 
-        trv.bind('<ButtonRelease-1>', lambda e: copySelection(select()))
+        trv.bind('<ButtonRelease-1>', lambda e: copySelection(select(trv)))
+        exTrv.bind('<ButtonRelease-1>', lambda e: copySelection(select(exTrv)))
 
         menubar = tk.Menu(self)
         pg_menu = tk.Menu(menubar, tearoff=False)
