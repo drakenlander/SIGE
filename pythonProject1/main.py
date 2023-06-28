@@ -1,5 +1,7 @@
 import tkinter as tk
+import pandas as pd
 from tkinter import ttk, filedialog
+from datetime import datetime
 import matplotlib
 import careers
 import charts
@@ -7,7 +9,6 @@ import charts
 # TODO: Add Excel file upload
 # TODO: Add Excel file conversion (?)
 # TODO: Add table Year Filter
-# TODO: Add custom .csv file generation
 
 matplotlib.use('TkAgg')
 
@@ -20,10 +21,14 @@ lastFrameRemembrance = []
 
 def uploadAction():
     filename = filedialog.askopenfilename()
-    exFile.append("File: " + filename)
+    exFile.append(filename)
+    df = pd.read_excel(exFile[-1])
+    print(df)
+
+    return df
 
 
-def passFile(f, v):
+def passFileName(f, v):
     if exFile[-1] != "":
         f.append(exFile[-1])
         v.set(f[-1])
@@ -85,6 +90,9 @@ class App(tk.Tk):
                 self.showFrame(Table)
 
         def writeFile(selectAll):
+            now = datetime.now()
+            dt_string = now.strftime("%d%m%Y_%H%M%S")
+
             if selectAll:
                 for i in trv.get_children():
                     trv.selection_add(i)
@@ -92,14 +100,14 @@ class App(tk.Tk):
                 sel = select()
                 copySelection(sel)
 
-                file = open("table.csv", "w", encoding="utf-8")
+                file = open(dt_string + ".csv", "w", encoding="utf-8")
                 file.write(sel)
 
             else:
                 sel = select()
 
                 if sel != "":
-                    file = open("table.csv", "w", encoding="utf-8")
+                    file = open(dt_string + ".csv", "w", encoding="utf-8")
                     file.write(sel)
 
         def select():
@@ -401,9 +409,9 @@ class Excel(tk.Frame):
 
         filename = []
         exName = tk.StringVar()
-        exName.set("File: No upload yet...")
+        exName.set("No upload yet...")
 
-        button = ttk.Button(self, text="Refresh", command=lambda: passFile(filename, exName))
+        button = ttk.Button(self, text="Refresh", command=lambda: passFileName(filename, exName))
         button.grid(row=0, column=0, padx=5, pady=5)
 
         label = ttk.Label(self, textvariable=exName, background="white", anchor="center")
