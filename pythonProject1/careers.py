@@ -45,11 +45,23 @@ fullColumnArr = ["uber_id",  # 0
                  "plan_de_estudios"]  # 10
 columnArr = ["0"] * len(fullColumnArr)
 columnArr[0] = 'uber_id'
+tableArr = []
 
 
 def selectConversion(q):
     cursor.execute(q)
     conn.commit()
+
+
+def getAllTables():
+    tableArr.clear()
+
+    cursor.execute('''SELECT * FROM information_schema.tables WHERE table_schema = 'public';''')
+
+    for table in cursor:
+        tableArr.append(table[2])
+
+    return tableArr
 
 
 def tabulate(carArr, colArr):

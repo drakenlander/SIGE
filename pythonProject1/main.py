@@ -394,6 +394,10 @@ class Columns(tk.Frame):
         columns_frame = tk.Frame(self, background="white")
         columns_frame.pack(side="left", padx=50)
 
+        combo = ttk.Combobox(columns_frame, state="readonly", values=careers.getAllTables(), background="white")
+        combo.pack(side="right", anchor="n", fill="x", padx=50, pady=5)
+        combo.current(len(careers.getAllTables()) - 1)
+
         def buttonToggle(col_toggle, n, column):
             if col_toggle[n]:
                 careers.addColumn(column)
@@ -413,6 +417,10 @@ class Columns(tk.Frame):
                 col_toggles[k] = True
 
             careers.clearColumnArr()
+
+        def updateCombobox():
+            combo.config(values=careers.getAllTables())
+            combo.current(len(careers.getAllTables()) - 1)
 
         tk.Checkbutton(columns_frame, text="ID", background="white", anchor="w",
                        command=lambda: buttonToggle(col_toggles, 1, "id")).pack(fill="x", pady=5)
@@ -445,8 +453,8 @@ class Columns(tk.Frame):
         tk.Checkbutton(columns_frame, text="Plan de Estudios", background="white", anchor="w",
                        command=lambda: buttonToggle(col_toggles, 10, "plan_de_estudios")).pack(fill="x", pady=5)
 
-        tk.Button(columns_frame, text="Reset array...", background="white", anchor="w",
-                  command=lambda: reset(columns_frame)).pack(fill="x", pady=5)
+        tk.Button(columns_frame, text="Reset array and Refresh...", background="white", anchor="w",
+                  command=lambda: [reset(columns_frame), updateCombobox()]).pack(fill="x", pady=5)
 
 
 class ExcelConversion(tk.Frame):
