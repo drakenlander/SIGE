@@ -7,12 +7,7 @@ from datetime import datetime
 import careers
 import charts
 
-# TODO: Alter careers.py to access any DB table (!)
-# 1. Take Excel (DONE)
-# 2. Generate DB table with SQLizer (DONE)
-# 3. Access generated table with careers.py
 # TODO: Add table Year Filter
-# TODO: Have all columns automatically selected for DB visualization
 # TODO: Fix r_set warning
 # TODO: Fix event warning
 
