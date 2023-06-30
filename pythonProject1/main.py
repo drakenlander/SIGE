@@ -9,7 +9,6 @@ import charts
 
 # TODO: Add table Year Filter
 # TODO: Fix r_set warning
-# TODO: Fix event warning
 
 matplotlib.use('TkAgg')
 
@@ -419,7 +418,7 @@ class Columns(tk.Frame):
             combo.config(values=careers.getAllTables())
             combo.current(len(careers.getAllTables()) - 1)
 
-        def getComboboxSelection(event):
+        def getComboboxSelection(_event):
             careers.selection.clear()
             selection = combo.get()
             careers.selection.append(selection)
