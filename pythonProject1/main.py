@@ -8,7 +8,6 @@ import careers
 import charts
 
 # TODO: Add table Year Filter
-# TODO: Fix r_set warning
 
 matplotlib.use('TkAgg')
 
@@ -33,7 +32,8 @@ def uploadAction(exTrv):
     exTrv['columns'] = headers
     exTrv['show'] = 'headings'
 
-    r_set = df.to_numpy().tolist()
+    r_set = df.to_numpy()
+    # .tolist()
 
     for i in headers:
         exTrv.column(i, anchor='w')
@@ -472,8 +472,8 @@ class ExcelConversion(tk.Frame):
         exName = tk.StringVar()
         exName.set("No upload yet...")
 
-        button = ttk.Button(self, text="Refresh", command=lambda: [careers.selectConversion(convert()),
-                                                                   passFileName(filename, exName)])
+        button = ttk.Button(self, text="Create DB table", command=lambda: [careers.selectConversion(convert()),
+                                                                           passFileName(filename, exName)])
         button.grid(row=0, column=0, padx=5, pady=5)
 
         label = ttk.Label(self, textvariable=exName, background="white", anchor="center")

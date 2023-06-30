@@ -119,7 +119,8 @@ def select(e, y):
     q = '''SELECT * FROM {0} WHERE "titulo_y_grado_otorgado" LIKE {1};'''.format(selection[-1], neuCareer)
     getByCareer(q)
 
-    yearQ = '''SELECT * FROM {0} WHERE "graduacion" > {1} AND "titulo_y_grado_otorgado" LIKE {2};'''.format(selection[-1], y, neuCareer)
+    yearQ = '''SELECT * FROM {0} WHERE "graduacion" > {1} AND "titulo_y_grado_otorgado" LIKE {2};
+    '''.format(selection[-1], y, neuCareer)
     getByYear(yearQ, neuCareer)
 
     # for k in range(len(lenRes)):
